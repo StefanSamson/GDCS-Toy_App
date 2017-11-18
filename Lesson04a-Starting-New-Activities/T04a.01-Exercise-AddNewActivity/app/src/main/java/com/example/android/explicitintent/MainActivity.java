@@ -16,6 +16,7 @@
 package com.example.android.explicitintent;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -30,11 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private EditText mNameEntry;
     private Button mDoSomethingCoolButton;
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = this;
         /*
          * Using findViewById, we get a reference to our Button from xml. This allows us to
          * do things like set the onClickListener which determines what happens when the button
@@ -53,15 +57,16 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                /*
-                 * Storing the Context in a variable in this case is redundant since we could have
-                 * just used "this" or "MainActivity.this" in the method call below. However, we
-                 * wanted to demonstrate what parameter we were using "MainActivity.this" for as
-                 * clear as possible.
-                 */
-                Context context = MainActivity.this;
-                String message = "Button clicked!\nTODO: Start a new Activity and pass some data.";
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+
+                String nameEntry = mNameEntry.getText().toString();
+                if (nameEntry.isEmpty()) {
+                    String message = "Button clicked!\nTODO: Start a new Activity and pass some data.";
+                    Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(mContext, ChildActivity.class);
+                    intent.putExtra(ChildActivity.NAME_ENTRY_VALUE_EXTRA, nameEntry);
+                    startActivity(intent);
+                }
             }
         });
     }
